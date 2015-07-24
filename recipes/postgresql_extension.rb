@@ -12,11 +12,11 @@ directory postgresql_plugin_dir
 bash 'build and install zombodb' do
   cwd node['zombodb']['src']['path']
   code <<-EOH
-cd postgres
-make clean install
+    cd postgres
+    make clean install
   EOH
-  #action :nothing
-  notifies :restart, 'service[postgresql]', :delayed
+  action :nothing
+  notifies :run, 'ruby_block[install zombodb]', :immediately
 end
 
 link File.join(postgresql_plugin_dir, 'zombodb.so') do
@@ -29,6 +29,7 @@ ruby_block 'install zombodb' do
   block do
     node.set['postgresql']['config']['local_preload_libraries'] = 'zombodb.so'
   end
+  action :nothing
   notifies :create, "template[#{postgresql_config_template}]", :delayed
 end
 

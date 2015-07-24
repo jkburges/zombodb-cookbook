@@ -1,24 +1,20 @@
-include_recipe 'java'
-
 include_recipe 'chef-sugar'
 include_recipe 'curl'
+include_recipe 'java'
 
 elasticsearch_user 'elasticsearch'
 elasticsearch_install 'elasticsearch'
+
 elasticsearch_configure 'elasticsearch' do
-  configuration ({
-    'script.disable_dynamic' => false,
-    'threadpool.bulk.queue_size' => 1024,
-    'threadpool.bulk.size' => 12,
-    'http.max_content_length' => '1024mb',
-    'index.query.bool.max_clause_count' => 1000000
-  })
+ configuration node['elasticsearch']['config'].to_hash
 end
 
 elasticsearch_service 'elasticsearch'
 
-elasticsearch_plugin 'zombodb' do
-  url 'https://github.com/zombodb/zombodb/releases/download/2.1.35/zombodb-plugin-2.1.35.zip'
+node['elasticsearch']['plugins'].each do |name, config|
+  elasticsearch_plugin name do
+    url config['url']
+  end
 end
 
 service 'elasticsearch' do
