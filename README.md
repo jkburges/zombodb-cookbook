@@ -6,6 +6,7 @@ Builds and installs the [ZomboDB PostgreSQL extension](https://github.com/zombod
 * vagrant
 * virtualbox (or some other provider)
 * vagrant-berkshelf plugin
+* vagrant-omnibus plugin
 
 ## Quickstart
 
